@@ -14,6 +14,30 @@ Se configura una sola vez y devuelve modelos listos para usar, con un manejo de 
 - **Sin dependencias de estado**: no obliga a usar Riverpod, Bloc ni Provider. La única dependencia es `http`.
 - **Caché en memoria**: un personaje ya cargado no se vuelve a pedir.
 
+## Demo
+
+La app de la Fase 2, [pragma_road_2](https://github.com/marlonc98/pragma_road_2), usa este paquete para buscar personajes y ver su detalle. Es el ejemplo funcional de cómo integrarlo:
+
+- [`lib/dependency_injection.dart`](https://github.com/marlonc98/pragma_road_2/blob/main/lib/dependency_injection.dart): elige el repositorio según el flavor (`mock`, `dev` o `prod`).
+- [`lib/data/repositories/character/`](https://github.com/marlonc98/pragma_road_2/tree/main/lib/data/repositories/character): los repositorios de la app crean un `RemoteDataKit` en modo `prod` o `mock` y llaman a `kit.characters`.
+- [`lib/data/core/async_state_extension.dart`](https://github.com/marlonc98/pragma_road_2/blob/main/lib/data/core/async_state_extension.dart): convierte el `AsyncState` del paquete en el `AsyncValue` de Riverpod.
+
+Para correrla:
+
+```bash
+git clone https://github.com/marlonc98/pragma_road_2.git
+```
+
+```bash
+cd pragma_road_2
+```
+
+```bash
+flutter run --flavor mock
+```
+
+Con `--flavor mock` funciona sin internet, con los datos de prueba del paquete. Con `--flavor prod` consulta la API real.
+
 ## Instalación
 
 Agrega el paquete en el `pubspec.yaml` de tu app, apuntando a una versión (tag):
