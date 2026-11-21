@@ -1,5 +1,13 @@
 /// Kit para consumir datos remotos.
+///
+/// Se usa a través de [RemoteDataKit], que se configura con
+/// [RemoteDataKitConfig] y arma internamente el cliente HTTP y los
+/// repositorios.
 library;
+
+// Punto de entrada
+export 'src/remote_data_kit.dart';
+export 'src/remote_data_kit_config.dart';
 
 // domain/core
 export 'src/domain/core/async_state.dart';
