@@ -56,7 +56,7 @@ void main() {
 
     test('asigna cada código HTTP a su error', () async {
       expect(await errorFor(401), AsyncStateError.unauthorized);
-      expect(await errorFor(403), AsyncStateError.invalidApiKey);
+      expect(await errorFor(403), AsyncStateError.unauthorized);
       expect(await errorFor(404), AsyncStateError.notFound);
       expect(await errorFor(500), AsyncStateError.invalidResponse);
       expect(await errorFor(418), AsyncStateError.unknown);
@@ -159,29 +159,6 @@ void main() {
         calls.single.url.toString(),
         'https://rickandmortyapi.com/api/character/1',
       );
-    });
-
-    test('envía la apiKey en el header configurado', () async {
-      final calls = <http.Request>[];
-      final kit = RemoteDataKit(
-        config: RemoteDataKitConfig(
-          apiKey: 'secreta',
-          apiKeyHeader: 'Authorization',
-          client: _client(200, jsonEncode(_characterJson(1)), calls: calls),
-        ),
-      );
-      await kit.characters.getCharacterById(1);
-      expect(calls.single.headers['Authorization'], 'secreta');
-    });
-
-    test('sin apiKey no envía el header', () async {
-      final calls = <http.Request>[];
-      await _characters(
-        200,
-        jsonEncode(_characterJson(1)),
-        calls: calls,
-      ).getCharacterById(1);
-      expect(calls.single.headers.containsKey('x-api-key'), false);
     });
 
     test('environment mock usa datos de prueba sin llamar a la red', () async {

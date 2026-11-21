@@ -7,8 +7,6 @@ import 'package:remote_data_kit/src/domain/errors/async_state_error.dart';
 class RestApi {
   final String hostUrl;
   final Duration timeout;
-  final String? apiKey;
-  final String apiKeyHeader;
   final http.Client _client;
 
   /// [client] permite inyectar un cliente propio (por ejemplo un `MockClient`
@@ -16,16 +14,11 @@ class RestApi {
   RestApi({
     required this.hostUrl,
     this.timeout = const Duration(seconds: 30),
-    this.apiKey,
-    this.apiKeyHeader = 'x-api-key',
     http.Client? client,
   }) : _client = client ?? http.Client();
 
   Future<Map<String, String>> headers() async {
-    return {
-      "Content-Type": "application/json; charset=utf-8",
-      apiKeyHeader: ?apiKey,
-    };
+    return {"Content-Type": "application/json; charset=utf-8"};
   }
 
   /// Devuelve el cuerpo de la respuesta en un [AsyncState] completado, o un
@@ -47,8 +40,7 @@ class RestApi {
         return AsyncState.success(data: response.body);
       }
       final AsyncStateError error = switch (code) {
-        401 => AsyncStateError.unauthorized,
-        403 => AsyncStateError.invalidApiKey,
+        401 || 403 => AsyncStateError.unauthorized,
         404 => AsyncStateError.notFound,
         >= 500 => AsyncStateError.invalidResponse,
         _ => AsyncStateError.unknown,

@@ -6,7 +6,7 @@ Se configura una sola vez y devuelve modelos listos para usar, con un manejo de 
 
 ## Características
 
-- **Cliente HTTP listo**: URL, headers, API key y timeout se configuran en un solo objeto.
+- **Cliente HTTP listo**: URL, entorno y timeout se configuran en un solo objeto.
 - **Modelos tipados**: `CharacterEntity` con enums para estado y género, y `SearchResult<T>` para paginación.
 - **Errores como enum**: `AsyncStateError` indica qué pasó y la app decide qué mensaje mostrar.
 - **No lanza excepciones**: todos los métodos devuelven un `AsyncState<T>`.
@@ -60,8 +60,6 @@ Toda la configuración va en `RemoteDataKitConfig`. Todos los valores son opcion
 final kit = RemoteDataKit(
   config: RemoteDataKitConfig(
     environment: RemoteDataKitEnvironment.prod,
-    apiKey: 'mi-api-key',
-    apiKeyHeader: 'Authorization',
     timeout: Duration(seconds: 10),
   ),
 );
@@ -71,12 +69,8 @@ final kit = RemoteDataKit(
 |---|---|---|
 | `environment` | `prod` | `prod` consulta la API real; `mock` usa datos de prueba internos, sin red. |
 | `baseUrl` | `https://rickandmortyapi.com/api` | URL base de la API (solo en `prod`). |
-| `apiKey` | `null` | Se envía en cada petición. Si es `null`, no se envía ningún header. |
-| `apiKeyHeader` | `x-api-key` | Nombre del header en el que viaja la `apiKey`. |
 | `timeout` | `30 s` | Tiempo máximo de espera por petición. |
 | `client` | `null` | Cliente `http` propio, pensado para tests (por ejemplo, `MockClient`). |
-
-> **No escribas la API key en el código.** Pásala al compilar con `--dart-define=API_KEY=...` y léela con `const String.fromEnvironment('API_KEY')`.
 
 ## Consultas disponibles
 
@@ -126,8 +120,7 @@ Para cambiar de estado en tu vista, usa `setNotStarted()`, `setLoading()`, `setS
 
 | `AsyncStateError` | Cuándo ocurre |
 |---|---|
-| `unauthorized` | La API respondió **401**. |
-| `invalidApiKey` | La API respondió **403**: la API key no existe, expiró o no tiene permisos. |
+| `unauthorized` | La API respondió **401** o **403**. |
 | `notFound` | La API respondió **404**. |
 | `invalidResponse` | La API respondió **5xx**, o el JSON no tiene el formato esperado. |
 | `noInternet` | No hay conexión o no se pudo llegar al servidor. |
@@ -141,8 +134,7 @@ String messageFor(AsyncStateError error) => switch (error) {
   AsyncStateError.noInternet => 'Revisa tu conexión a internet',
   AsyncStateError.timeout => 'El servidor tardó demasiado',
   AsyncStateError.notFound => 'No encontramos lo que buscabas',
-  AsyncStateError.unauthorized ||
-  AsyncStateError.invalidApiKey => 'No tienes acceso',
+  AsyncStateError.unauthorized => 'No tienes acceso',
   AsyncStateError.invalidResponse ||
   AsyncStateError.unknown => 'Algo salió mal, intenta de nuevo',
 };
@@ -152,14 +144,13 @@ Como el `switch` es exhaustivo, si una versión futura agrega un error nuevo, tu
 
 ## Uso con Riverpod
 
-Crea el kit una sola vez en un provider. El resto de la app no necesita conocer la API key:
+Crea el kit una sola vez en un provider. El resto de la app solo usa el repositorio:
 
 ```dart
 final remoteDataKitProvider = Provider<RemoteDataKit>(
   (ref) => RemoteDataKit(
     config: RemoteDataKitConfig(
       environment: RemoteDataKitEnvironment.prod,
-      apiKey: const String.fromEnvironment('API_KEY'),
     ),
   ),
 );

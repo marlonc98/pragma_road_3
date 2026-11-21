@@ -20,12 +20,6 @@ class RemoteDataKitConfig {
   /// URL base de la API (solo en [RemoteDataKitEnvironment.prod]).
   final String baseUrl;
 
-  /// API key que se envía en cada petición. Si es `null` no se envía.
-  final String? apiKey;
-
-  /// Nombre del header en el que se envía [apiKey].
-  final String apiKeyHeader;
-
   /// Tiempo máximo de espera de cada petición.
   final Duration timeout;
 
@@ -35,8 +29,6 @@ class RemoteDataKitConfig {
   const RemoteDataKitConfig({
     this.environment = RemoteDataKitEnvironment.prod,
     this.baseUrl = 'https://rickandmortyapi.com/api',
-    this.apiKey,
-    this.apiKeyHeader = 'x-api-key',
     this.timeout = const Duration(seconds: 30),
     this.client,
   });

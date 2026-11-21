@@ -12,7 +12,6 @@ import 'package:remote_data_kit/src/remote_data_kit_config.dart';
 /// ```dart
 /// final kit = RemoteDataKit(
 ///   config: RemoteDataKitConfig(
-///     apiKey: 'mi-key',
 ///     environment: RemoteDataKitEnvironment.prod, // o .mock
 ///   ),
 /// );
@@ -36,8 +35,6 @@ class RemoteDataKit {
         final api = RestApi(
           hostUrl: config.baseUrl,
           timeout: config.timeout,
-          apiKey: config.apiKey,
-          apiKeyHeader: config.apiKeyHeader,
           client: config.client,
         );
         return RemoteDataKit._(config, CharacterRepositoryImpl(api));

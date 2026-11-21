@@ -2,11 +2,8 @@
 ///
 /// El paquete solo indica qué pasó; la app decide qué mensaje mostrar.
 enum AsyncStateError {
-  /// La API respondió 401: falta autenticación o no es válida.
+  /// La API respondió 401 o 403: falta autenticación o no hay permisos.
   unauthorized,
-
-  /// La API rechazó la API key: no existe, expiró o no tiene permisos (403).
-  invalidApiKey,
 
   /// No hay conexión a internet o no se pudo llegar al servidor.
   noInternet,

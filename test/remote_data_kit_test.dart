@@ -18,11 +18,6 @@ void main() {
       expect(state.error, AsyncStateError.notFound);
     });
 
-    test('fromError respeta invalidApiKey', () {
-      final state = AsyncState<int>.fromError(AsyncStateError.invalidApiKey);
-      expect(state.error, AsyncStateError.invalidApiKey);
-    });
-
     test('fromError convierte TimeoutException en timeout', () {
       final state = AsyncState<int>.fromError(TimeoutException('lento'));
       expect(state.error, AsyncStateError.timeout);
