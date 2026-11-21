@@ -1,6 +1,6 @@
 name: remote_data_kit
-description: "Paquete para consumir datos remotos."
-version: 0.0.1
+description: "Kit para consultar la API de Rick and Morty con modelos tipados, manejo de errores simple y modo mock."
+version: 1.0.0
 
 environment:
   sdk: ^3.13.5
